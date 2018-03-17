@@ -1,13 +1,4 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <string.h>
-#include <stdio.h>
-
-#define ELF_32 0
-#define ELF_64 1
+#include "infection.h"
 
 size_t	array_length(char **array)
 {
@@ -120,6 +111,7 @@ int		is_elf_type(char *file_path)
 	fd = open(file_path, O_RDWR);
 	if (fd == -1)
 		return (0);
+
 	return (1);
 }
 
@@ -169,17 +161,4 @@ char	**get_elf_files(char **files, char *start_path, int elf_type)
 		free(dirs);
 	closedir(directory);
 	return (files);
-}
-
-int		main(void)
-{
-	char **files = get_elf_files(NULL, ".", ELF_64);
-	int i = 0;
-
-	while (i < array_length(files))
-	{
-		printf("%s\n", files[i]);
-		i++;
-	}
-	return (0);
 }
