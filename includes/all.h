@@ -19,6 +19,39 @@
 #include <openssl/evp.h>
 #include <openssl/aes.h>
 
+#define TRUE		1
+#define FALSE		0
+
+/*
+**	CIPHER PLAIN
+*/
+
+typedef struct		s_cipher_plain
+{
+	char			*cipher;
+	char			*plain;
+	int				cipher_len;
+	int				plain_len;
+}					t_cipher_plain;
+
+t_cipher_plain		*get_cipher_plain();
+int 				set_plain(t_cipher_plain *cipher_plain, char *plain, int len);
+
+/*
+**	KEY_IV
+*/
+
+typedef struct		s_key_iv
+{
+	char			*key;
+	char			*iv;
+	int				key_len;
+	int				iv_len;
+}					t_key_iv;
+
+
+t_key_iv			*gen_key_iv(char *key, char *iv, int key_len, int iv_len);
+void 				free_key_iv(t_key_iv *key_iv);
 
 /*
 **	AES
@@ -28,12 +61,13 @@
 typedef struct		s_aes
 {
 	EVP_CIPHER_CTX	*ctx;
-	char			key_raw[32];
-	char			iv_raw[16];
+	t_key_iv		*key_iv;
 }					t_aes;
 
 
 t_aes				*load_aes(void);
-int 				set_private_key(t_aes *aes, char *key, int len);
+int 				init_encryption(t_aes *aes);
 
+void				encrypt_plain_text(t_aes *aes, t_cipher_plain *cipher_plain);
+void				decrypt_cipher_text(t_aes *aes, t_cipher_plain *cipher_plain);
 #endif

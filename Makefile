@@ -28,6 +28,8 @@ INCDIR				=	includes/
 SRCBASE_PESTILENCE	=	\
 					main.c				\
 					aes.c				\
+					key_iv.c			\
+					cipher_plain.c		\
 
 INCS			=	$(addprefix $(INCDIR), $(INCBASE))
 

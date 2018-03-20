@@ -12,25 +12,49 @@
 
 #include "all.h"
 
-int 				set_private_key(t_aes *aes, char *key, int len)
+int 				init_encryption(t_aes *aes)
 {
-	return 0;
-	// return AES_set_encrypt_key(key, (len * 4), &aes->key);
+	return EVP_CIPHER_CTX_ctrl(aes->ctx, EVP_CTRL_GCM_SET_IVLEN, aes->key_iv->iv_len, NULL) == 1
+		&& EVP_EncryptInit_ex(aes->ctx, NULL, NULL, aes->key_iv->key, aes->key_iv->iv) == 1;
 }
 
 t_aes				*load_aes()
 {
 	t_aes		*aes = NULL;
 
+	OpenSSL_add_all_algorithms();
 	if (!(aes = (t_aes*)malloc(sizeof(struct s_aes))))
 		return (NULL);
-	OpenSSL_add_all_algorithms();
-	ERR_load_crypto_strings();
+	if (!(aes->ctx = EVP_CIPHER_CTX_new()))
+		return (NULL);
+	if (!EVP_EncryptInit_ex(aes->ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
+		return (NULL);
+	aes->key_iv = NULL;
 	return (aes);
 }
 
 void				free_aes(t_aes *aes)
 {
-	ERR_free_strings();
+	if (aes->key_iv)
+		free_key_iv(aes->key_iv);
+	EVP_CIPHER_CTX_free(aes->ctx);
 	free(aes);
+}
+
+void				encrypt_plain_text(t_aes *aes, t_cipher_plain *cipher_plain)
+{
+	int len = 0;
+	if (!EVP_EncryptUpdate(aes->ctx, cipher_plain->cipher, &len, cipher_plain->plain, cipher_plain->plain_len))
+		return;
+	cipher_plain->cipher_len = len;
+}
+
+void				decrypt_cipher_text(t_aes *aes, t_cipher_plain *cipher_plain)
+{
+	int len = 0;
+	char *test = malloc(sizeof(cipher_plain->plain_len));
+
+	if (!EVP_DecryptUpdate(aes->ctx, test, &len, cipher_plain->cipher, cipher_plain->cipher_len))
+		return;
+	printf("%s\n", test);
 }
