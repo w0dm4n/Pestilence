@@ -16,10 +16,19 @@ int 			set_plain(t_cipher_plain *cipher_plain, char *plain, int len)
 {
 	if (!(cipher_plain->plain = (char*)malloc(len)))
 		return FALSE;
-	if (!(cipher_plain->cipher = (char*)malloc(len)))
-		return FALSE;
 	cipher_plain->plain_len = len;
 	memcpy(cipher_plain->plain, plain, len);
+	return TRUE;
+}
+
+int				set_cipher(t_cipher_plain *cipher_plain, char *cipher, int len)
+{
+	// if (!(cipher_plain->plain = (char*)malloc(len)))
+	// 	return FALSE;
+	// if (!(cipher_plain->cipher = (char*)malloc(len)))
+	// 	return FALSE;
+	// cipher_plain->plain_len = len;
+	// memcpy(cipher_plain->plain, plain, len);
 	return TRUE;
 }
 

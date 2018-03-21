@@ -21,6 +21,7 @@
 
 #define TRUE		1
 #define FALSE		0
+#define BOOL		int
 
 /*
 **	CIPHER PLAIN
@@ -60,14 +61,17 @@ void 				free_key_iv(t_key_iv *key_iv);
 #define AES_SUCCESS	0
 typedef struct		s_aes
 {
-	EVP_CIPHER_CTX	*ctx;
+	EVP_CIPHER_CTX	*ctx_encryption;
+	EVP_CIPHER_CTX	*ctx_decryption;
 	t_key_iv		*key_iv;
 }					t_aes;
 
 
 t_aes				*load_aes(void);
+void				free_aes(t_aes *aes);
 int 				init_encryption(t_aes *aes);
+int 				init_decryption(t_aes *aes);
 
-void				encrypt_plain_text(t_aes *aes, t_cipher_plain *cipher_plain);
-void				decrypt_cipher_text(t_aes *aes, t_cipher_plain *cipher_plain);
+BOOL				encrypt_plain_text(t_aes *aes, t_cipher_plain *cipher_plain);
+BOOL				decrypt_cipher_text(t_aes *aes, t_cipher_plain *cipher_plain);
 #endif
