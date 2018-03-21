@@ -16,9 +16,9 @@ int 			set_plain(t_cipher_plain *cipher_plain, char *plain, int len)
 {
 	if (!(cipher_plain->plain = (char*)malloc(len)))
 		return FALSE;
-	cipher_plain->plain_len = len;
 	if (!(cipher_plain->cipher = (char*)malloc(len)))
 		return FALSE;
+	cipher_plain->plain_len = len;
 	memcpy(cipher_plain->plain, plain, len);
 	return TRUE;
 }
@@ -34,13 +34,4 @@ t_cipher_plain	*get_cipher_plain()
 	cipher_plain->cipher_len = 0;
 	cipher_plain->plain_len = 0;
 	return (cipher_plain);
-}
-
-void			free_cipher_plain(t_cipher_plain *cipher_plain)
-{
-	if (cipher_plain->cipher != NULL)
-		free(cipher_plain->cipher);
-	if (cipher_plain->plain != NULL)
-		free(cipher_plain->plain);
-	free(cipher_plain);
 }

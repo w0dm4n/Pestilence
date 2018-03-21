@@ -21,42 +21,26 @@ t_key_iv	*get_key_iv(t_aes *aes)
 
 int main(int argc, char **argv)
 {
-	t_aes			*aes;
-	t_cipher_plain	*cipher_plain;
+	t_aes		*aes = NULL;
 
-	if ((aes = load_aes()) != NULL)
-	{
-		if (get_key_iv(aes) != NULL)
+	if ((aes = load_aes()) != NULL) {
+		if (get_key_iv(aes) != NULL && init_encryption(aes))
 		{
-			if ((cipher_plain = get_cipher_plain()) != NULL)
-			{
+			t_cipher_plain *cipher_plain = get_cipher_plain();
+			if (cipher_plain) {
 				char bonjour[] = "Hello friend\0";
-				set_plain(cipher_plain, (char*)&bonjour, sizeof(bonjour));
-
-				write(1, "clean   chain            : ", 27);
-				write(1, cipher_plain->plain, cipher_plain->plain_len);
-				printf("\nclean chain length       : %d\n", cipher_plain->plain_len);
-				cipher_plain->cipher_len =	encrypt_aes	(
-															cipher_plain->plain, cipher_plain->plain_len,
-															aes->key_iv->key,
-															aes->key_iv->iv,
-															cipher_plain->cipher
-														);
-				write(1, "crypted chain            : ", 27);
-				write(1, cipher_plain->cipher, cipher_plain->cipher_len);
-				printf("\ncrypted chain length     : %d\n", cipher_plain->cipher_len);
-				cipher_plain->plain_len = decrypt_aes	(
-															cipher_plain->cipher, cipher_plain->cipher_len,
-															aes->key_iv->key,
-															aes->key_iv->iv,
-															cipher_plain->plain
-														);
-				write(1, "uncrypted chain          : ", 27);
-				write(1, cipher_plain->plain, cipher_plain->plain_len);
-				printf("\nuncripted chain length   : %d\n", cipher_plain->plain_len);
-				free_cipher_plain(cipher_plain);
+				if (set_plain(cipher_plain, (char*)&bonjour, sizeof(bonjour))) {
+					encrypt_plain_text(aes, cipher_plain);
+					// decrypt_cipher_text(aes, cipher_plain);
+					// printf("%s\n", cipher_plain->plain);
+					// int i = 0;
+					// while (i < cipher_plain->cipher_len) {
+					// 	printf("%02x\n", cipher_plain->cipher[i++]);
+					// }
+				}
 			}
 		}
-		free_aes(aes);
 	}
+
+	free_aes(aes);
 }
