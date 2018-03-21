@@ -35,6 +35,7 @@ typedef struct		s_cipher_plain
 }					t_cipher_plain;
 
 t_cipher_plain		*get_cipher_plain();
+void				free_cipher_plain(t_cipher_plain *cipher_plain);
 int 				set_plain(t_cipher_plain *cipher_plain, char *plain, int len);
 
 /*
@@ -60,14 +61,21 @@ void 				free_key_iv(t_key_iv *key_iv);
 #define AES_SUCCESS	0
 typedef struct		s_aes
 {
-	EVP_CIPHER_CTX	*ctx;
 	t_key_iv		*key_iv;
 }					t_aes;
 
-
 t_aes				*load_aes(void);
-int 				init_encryption(t_aes *aes);
 
-void				encrypt_plain_text(t_aes *aes, t_cipher_plain *cipher_plain);
-void				decrypt_cipher_text(t_aes *aes, t_cipher_plain *cipher_plain);
+int					encrypt_aes	(
+									unsigned char *plaintext, int plaintext_len,	//chain to enrypt
+									unsigned char *key,								//aes key
+									unsigned char *iv, 								//aes iv
+									unsigned char *ciphertext						//pointer of final crypted data
+								);
+int					decrypt_aes	(
+									unsigned char *ciphertext, int ciphertext_len,	//crypted chain
+									unsigned char *key,								//aes key
+									unsigned char *iv, 								//aes iv
+									unsigned char *plaintext						//pointer of final uncrypted data
+								);
 #endif

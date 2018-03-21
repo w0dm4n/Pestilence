@@ -12,49 +12,66 @@
 
 #include "all.h"
 
-int 				init_encryption(t_aes *aes)
+t_aes	*load_aes()
 {
-	return EVP_CIPHER_CTX_ctrl(aes->ctx, EVP_CTRL_GCM_SET_IVLEN, aes->key_iv->iv_len, NULL) == 1
-		&& EVP_EncryptInit_ex(aes->ctx, NULL, NULL, aes->key_iv->key, aes->key_iv->iv) == 1;
-}
-
-t_aes				*load_aes()
-{
-	t_aes		*aes = NULL;
+	t_aes	*aes = NULL;
 
 	OpenSSL_add_all_algorithms();
 	if (!(aes = (t_aes*)malloc(sizeof(struct s_aes))))
-		return (NULL);
-	if (!(aes->ctx = EVP_CIPHER_CTX_new()))
-		return (NULL);
-	if (!EVP_EncryptInit_ex(aes->ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
 		return (NULL);
 	aes->key_iv = NULL;
 	return (aes);
 }
 
-void				free_aes(t_aes *aes)
+void	free_aes(t_aes *aes)
 {
 	if (aes->key_iv)
 		free_key_iv(aes->key_iv);
-	EVP_CIPHER_CTX_free(aes->ctx);
 	free(aes);
 }
 
-void				encrypt_plain_text(t_aes *aes, t_cipher_plain *cipher_plain)
+int		encrypt_aes(
+		unsigned char *plaintext, int plaintext_len,	//chain to enrypt
+		unsigned char *key,								//aes key
+		unsigned char *iv,								//aes iv
+		unsigned char *ciphertext)						//pointer of final crypted data
 {
-	int len = 0;
-	if (!EVP_EncryptUpdate(aes->ctx, cipher_plain->cipher, &len, cipher_plain->plain, cipher_plain->plain_len))
-		return;
-	cipher_plain->cipher_len = len;
+	EVP_CIPHER_CTX	*ctx;
+	int				len;
+	int				ciphertext_len;
+
+	if(!(ctx = EVP_CIPHER_CTX_new()))
+		return (-1);
+	if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
+		return (-1);
+	if(1 != EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv))
+		return (-1);
+	if(1 != EVP_EncryptUpdate(ctx, ciphertext, &len, plaintext, plaintext_len))
+		return (-1);
+	ciphertext_len = len;
+	EVP_CIPHER_CTX_free(ctx);
+	return ciphertext_len;
 }
 
-void				decrypt_cipher_text(t_aes *aes, t_cipher_plain *cipher_plain)
+int		decrypt_aes(
+		unsigned char *ciphertext, int ciphertext_len,	//crypted chain
+		unsigned char *key,								//aes key
+		unsigned char *iv, 								//aes iv
+		unsigned char *plaintext)						//pointer of final uncrypted data
 {
-	int len = 0;
-	char *test = malloc(sizeof(cipher_plain->plain_len));
+	EVP_CIPHER_CTX	*ctx;
+	int				len;
+	int				plaintext_len;
 
-	if (!EVP_DecryptUpdate(aes->ctx, test, &len, cipher_plain->cipher, cipher_plain->cipher_len))
-		return;
-	printf("%s\n", test);
+	if(!(ctx = EVP_CIPHER_CTX_new()))
+		return (-1);
+	if(!EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
+		return (-1);
+	if(!EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
+		return (-1);
+	if(!EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertext_len))
+		return (-1);
+	plaintext_len = len;
+	EVP_CIPHER_CTX_free(ctx);
+	return plaintext_len;
 }
