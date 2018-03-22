@@ -28,7 +28,8 @@ static bool		is_elf_file(char *file_path, int elf_type)
 
 	if (elf == NULL)
 		return (false);
-	if (elf->header->e_type != ELF_EXC_TYPE)
+	if (elf->header->e_type != ELF_EXC_TYPE\
+		&& elf->header->e_type != ELF_SHARED_TYPE)
 	{
 		destruct_elf(elf);
 		return (false);

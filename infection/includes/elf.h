@@ -33,6 +33,7 @@
 
 # define ELF_OBJ_TYPE		1
 # define ELF_EXC_TYPE		2
+# define ELF_SHARED_TYPE	3
 
 /* These constants are for the segment types stored in the image headers */
 #define PT_NULL    			0
@@ -167,6 +168,7 @@ typedef struct			s_elf
 
 	/* FUNCTIONS POINTERS */
 	struct s_section	*(*get_section)();
+	struct s_section	*(*get_section_by_index)();
 	int					(*get_nbr_segments)();
 	int					(*get_nbr_sections)();
 	int					(*get_offset_sections)();

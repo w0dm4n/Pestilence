@@ -36,8 +36,9 @@ int		get_nbr_sections(struct s_section *sections)
 	tmp = sections;
 	while (tmp)
 	{
-		res++;
 		tmp = tmp->next;
+		if (tmp)
+			res++;
 	}
 	return (res);
 }
@@ -66,14 +67,33 @@ int		get_index_section(t_elf *elf, char *name)
 	index = 0;
 	while (tmp)
 	{
-		index++;
 		if (strcmp(name, tmp->name) == 0)
 		{
 			return (index);
 		}
 		tmp = tmp->next;
+		index++;
 	}
 	return (-1);
+}
+
+t_section	*get_section_by_index(t_elf *elf, int index)
+{
+	t_section	*tmp;
+	int			i;
+
+	tmp = elf->sections;
+	i = 0;
+	while (tmp)
+	{
+		if (i == index)
+		{
+			return (tmp);
+		}
+		i++;
+		tmp = tmp->next;
+	}
+	return (NULL);
 }
 
 t_section	*get_section(t_elf *elf, char *name)
@@ -177,6 +197,7 @@ t_elf		*new_elf(void)
 	elf->len = 0;
 	elf->buffer = NULL;
 	elf->get_section = get_section;
+	elf->get_section_by_index = get_section_by_index;
 	elf->get_nbr_segments = get_nbr_segments;
 	elf->get_nbr_sections = get_nbr_sections;
 	elf->get_offset_sections = get_offset_sections;

