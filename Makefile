@@ -17,7 +17,7 @@ NAMEBASE    =   $(shell basename $(NAME))
 LENGTHNAME	=	`printf "%s" $(NAMEBASE) | wc -c`
 MAX_COLS	=	$$(echo "$$(tput cols)-24-$(LENGTHNAME)"|bc)
 
-CC			=	gcc -lssl -lcrypto
+CC			=	gcc -lssl -lcrypto -ldl
 FLAGS_O		=
 
 SRCDIR_PESTILENCE		=	srcs/
@@ -30,6 +30,8 @@ SRCBASE_PESTILENCE	=	\
 					aes.c				\
 					key_iv.c			\
 					cipher_plain.c		\
+					infection.c			\
+					safe.c				\
 
 INCS			=	$(addprefix $(INCDIR), $(INCBASE))
 
