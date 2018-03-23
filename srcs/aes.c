@@ -40,6 +40,7 @@ t_aes				*load_aes()
 	if (!EVP_DecryptInit_ex(aes->ctx_decryption, EVP_aes_256_gcm(), NULL, NULL, NULL))
 		return (NULL);
 	aes->key_iv = NULL;
+	aes->valid = FALSE;
 	return (aes);
 }
 

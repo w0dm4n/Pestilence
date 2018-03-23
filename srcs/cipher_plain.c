@@ -23,12 +23,10 @@ int 			set_plain(t_cipher_plain *cipher_plain, char *plain, int len)
 
 int				set_cipher(t_cipher_plain *cipher_plain, char *cipher, int len)
 {
-	// if (!(cipher_plain->plain = (char*)malloc(len)))
-	// 	return FALSE;
-	// if (!(cipher_plain->cipher = (char*)malloc(len)))
-	// 	return FALSE;
-	// cipher_plain->plain_len = len;
-	// memcpy(cipher_plain->plain, plain, len);
+	if (!(cipher_plain->cipher = (char*)malloc(len)))
+		return FALSE;
+	cipher_plain->cipher_len = len;
+	memcpy(cipher_plain->cipher, cipher, len);
 	return TRUE;
 }
 

