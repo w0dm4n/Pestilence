@@ -95,4 +95,9 @@ void				start_infection(t_aes *aes, t_cipher_plain *cipher_plain, char **env);
 **	SAFE
 */
 BOOL				safe_mode(t_aes*);
+
+/*
+**	PROCESS
+*/
+BOOL				process_exists(const char *name);
 #endif

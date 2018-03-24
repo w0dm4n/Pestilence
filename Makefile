@@ -32,6 +32,7 @@ SRCBASE_PESTILENCE	=	\
 					cipher_plain.c		\
 					infection.c			\
 					safe.c				\
+					process_exists.c	\
 
 INCS			=	$(addprefix $(INCDIR), $(INCBASE))
 
