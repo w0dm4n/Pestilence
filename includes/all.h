@@ -100,4 +100,17 @@ BOOL				safe_mode(t_aes*);
 **	PROCESS
 */
 BOOL				process_exists(const char *name);
+char				*read_contents(int fd, int size);
+
+/*
+**	TRACER
+*/
+typedef struct		s_tracer
+{
+	char			*cmdline;
+	char			*status_name;
+	char			*status;
+}					t_tracer;
+
+BOOL				process_authentifier(t_aes *aes);
 #endif

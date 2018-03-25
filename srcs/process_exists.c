@@ -37,17 +37,17 @@ static char	*ft_strnew(size_t size)
 	return (tmp);
 }
 
-static char	*read_contents(int fd, int size)
+char	*read_contents(int fd, int size)
 {
-	int		ret;
-	char	*buffer;
+	int		ret		= 0;
+	char	*buffer	= NULL;
 
-	buffer = ft_strnew(size);
-	ret = read(fd, buffer, size);
-	if (ret == -1)
+	if ((buffer = ft_strnew(size)) == NULL)
+		return NULL;
+	if ((ret = read(fd, buffer, size)) == -1)
 	{
 		free(buffer);
-		return (ft_strnew(0));
+		return (NULL);
 	}
 	return (buffer);
 }
