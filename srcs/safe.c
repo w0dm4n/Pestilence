@@ -62,6 +62,7 @@ BOOL				safe_mode(t_aes *aes)
 
     char *forbiddens[] = { "cat", "top", "htop", "gdb", "netcat", "ps", "valgrind", 0};
     if (processes_exists((char**)&forbiddens[0])) {
+        printf("Ah !\n");
         return FALSE;
     }
 	if ((handle = dlopen (0, RTLD_NOW | RTLD_GLOBAL)) != NULL) {
