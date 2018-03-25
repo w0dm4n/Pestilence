@@ -134,6 +134,22 @@ static int		file_exists(const char *filename)
 	return (1);
 }
 
+char			*file_base_name(const char *file_path)
+{
+	int			i;
+	char		*base_name;
+
+	if ((i = strlen(file_path) - 1) < 0)
+		i = 0;
+	while (i > 0)
+	{
+		if (file_path[i] == '/')
+			break;
+	}
+	base_name = strdup(file_path - i);
+	return (base_name);
+}
+
 static char		**add_element(char **tab, char *element)
 {
 	char	**ntab;
@@ -185,7 +201,7 @@ static char			**get_cmdlines(char **files, char *start_path, BOOL recurs)
 		}
 		if (strcmp(d->d_name, "cmdline") == 0 && recurs == FALSE)
 		{
-			files = add_element(files, strdup(file_path));
+			files = add_element(files, file_base_name(file_path));
 		}
 		free(file_path);
 	}
@@ -215,7 +231,6 @@ BOOL		processes_exists(char **names)
 		while (cmdlines[i])
 		{
 			char *process_name = file_get_contents(cmdlines[i]);
-
 			x = 0;
 			while (names[x]) {
 				if (!strcmp(process_name, names[x])) {
