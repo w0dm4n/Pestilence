@@ -99,7 +99,7 @@ BOOL				safe_mode(t_aes*);
 /*
 **	PROCESS
 */
-BOOL				process_exists(const char *name);
+BOOL				processes_exists(char **names);
 char				*read_contents(int fd, int size);
 
 /*

