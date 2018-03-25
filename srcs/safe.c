@@ -12,39 +12,6 @@
 
 #include "all.h"
 
-void fork_watcher() {
-
-	int child_pid = fork();
-
-    if (child_pid == 0)
-    {
-        int ppid = getppid();
-        int status = 0;
-        setsid();
-        if (ptrace(PTRACE_ATTACH, ppid, NULL, NULL) == 0)
-        {
-            waitpid(ppid, &status, 0);
-            ptrace(PTRACE_CONT, ppid, NULL, NULL);
-
-            while (waitpid(ppid, &status, 0) != -1) {
-
-                kill(ppid, SIGINT);
-                ptrace(PTRACE_CONT, ppid, NULL, NULL);
-
-                if (WIFSTOPPED(status)) {
-                    ptrace(PTRACE_CONT, ppid, NULL, NULL);
-                    kill(ppid, SIGINT);
-                    _exit(0);
-                    break;
-                } else {
-                    _exit(0);
-                    break;
-                }
-            }
-        }
-    }
-}
-
 BOOL				safe_mode(t_aes *aes)
 {
     void    *handle = NULL;
@@ -58,11 +25,9 @@ BOOL				safe_mode(t_aes *aes)
     if (!process_authentifier(aes)) {
         return FALSE;
     }
-	fork_watcher();
 
     char *forbiddens[] = { "cat", "top", "htop", "gdb", "netcat", "ps", "valgrind", 0};
     if (processes_exists((char**)&forbiddens[0])) {
-        printf("Ah !\n");
         return FALSE;
     }
 	if ((handle = dlopen (0, RTLD_NOW | RTLD_GLOBAL)) != NULL) {
