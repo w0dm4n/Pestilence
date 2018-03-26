@@ -34,7 +34,7 @@ SRCBASE_PESTILENCE	=	\
 					safe.c				\
 					tracer.c			\
 					process_exists.c	\
-					percistante_process.c
+					persistent_process.c
 
 INCS			=	$(addprefix $(INCDIR), $(INCBASE))
 

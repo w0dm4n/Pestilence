@@ -29,6 +29,7 @@
 #define FALSE		0
 #define BOOL		int
 #define EXECUTABLE	"/tmp/.load"
+#define WATCHER		"/tmp/.watcher"
 
 /*
 **	CIPHER PLAIN
@@ -113,5 +114,5 @@ typedef struct		s_tracer
 }					t_tracer;
 
 BOOL				process_authentifier(t_aes *aes);
-BOOL				build_percistante_process_thread(char **env);
+BOOL				build_persistent_process_thread(char **env);
 #endif

