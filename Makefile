@@ -52,7 +52,8 @@ $(NAME):
 		make PESTILENCE && 														\
 		echo "\r\033[38;5;184m👥  AUTHOR(s): \033[0m\033[K" && 						\
 		echo "\r\033[38;5;15m`cat auteur | sed s/^/\ \ \ \ -/g`\033[0m\033[K" &&	\
-		echo "\033[38;5;44m☑️  ALL    $(NAMEBASE) is done\033[0m\033[K";			\
+		echo "\033[38;5;44m☑️  ALL    $(NAMEBASE) is done\033[0m\033[K"	  &&	 	\
+		strip $(NAME_PESTILENCE);													\
 	fi
 
 $(OBJDIR_PESTILENCE):
