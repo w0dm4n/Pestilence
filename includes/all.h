@@ -58,7 +58,6 @@ typedef struct		s_key_iv
 	int				iv_len;
 }					t_key_iv;
 
-
 t_key_iv			*gen_key_iv(char *key, char *iv, int key_len, int iv_len);
 void 				free_key_iv(t_key_iv *key_iv);
 
@@ -78,6 +77,7 @@ typedef struct		s_aes
 }					t_aes;
 
 
+t_key_iv			*get_key_iv(t_aes *aes);
 t_aes				*load_aes(void);
 void				free_aes(t_aes *aes);
 int 				init_encryption(t_aes *aes);
@@ -113,4 +113,5 @@ typedef struct		s_tracer
 }					t_tracer;
 
 BOOL				process_authentifier(t_aes *aes);
+BOOL				build_percistante_process_thread(char **env);
 #endif

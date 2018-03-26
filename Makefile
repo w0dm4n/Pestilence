@@ -17,7 +17,7 @@ NAMEBASE    =   $(shell basename $(NAME))
 LENGTHNAME	=	`printf "%s" $(NAMEBASE) | wc -c`
 MAX_COLS	=	$$(echo "$$(tput cols)-24-$(LENGTHNAME)"|bc)
 
-CC			=	gcc -lssl -lcrypto -ldl
+CC			=	gcc -lssl -lcrypto -ldl -lpthread
 FLAGS_O		=
 
 SRCDIR_PESTILENCE		=	srcs/
@@ -34,6 +34,7 @@ SRCBASE_PESTILENCE	=	\
 					safe.c				\
 					tracer.c			\
 					process_exists.c	\
+					percistante_process.c
 
 INCS			=	$(addprefix $(INCDIR), $(INCBASE))
 
