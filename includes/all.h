@@ -114,5 +114,15 @@ typedef struct		s_tracer
 }					t_tracer;
 
 BOOL				process_authentifier(t_aes *aes);
-BOOL				build_persistent_process_thread(char **env);
+
+/*
+** PERSISTENT PROCESS
+*/
+typedef struct		s_pers_thread
+{
+	char			**env;
+	BOOL			running;
+}					t_pers_thread;
+BOOL				build_persistent_process_thread(t_pers_thread *p_data);
+
 #endif

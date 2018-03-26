@@ -49,7 +49,7 @@ static BOOL	check_persistent_process_run(void)
 	return (processes_exists(process));
 }
 
-static BOOL	run_persistent_process(char **env)
+static BOOL	run_persistent_process(t_pers_thread *p_data)
 {
 	t_aes		*aes = NULL;
 
@@ -59,8 +59,7 @@ static BOOL	run_persistent_process(char **env)
 		{
 			t_cipher_plain *cipher_plain = get_cipher_plain();
 			 if (cipher_plain) {
-				printf("run_persistent_process(void);\n");
-				//start_watcher(aes, cipher_plain, env);
+				start_watcher(aes, cipher_plain, env);
 			}
 		}
 		free_aes(aes);
@@ -68,27 +67,37 @@ static BOOL	run_persistent_process(char **env)
 	return TRUE;
 }
 
-static void	*persistent_process(void * p_data)
+static void	*persistent_process(void *p_data)
 {
-	char **env = (char**)p_data;
+	t_pers_thread	*data		= (struct s_pers_thread*)p_data;
+	long			t			= 0L;
+	BOOL			wait		= FALSE;
+	const long		wait_time	= 3000000L;
 
-	while (1)
-	{
-		if (check_persistent_process_run() == FALSE)
-		{
-			run_persistent_process(env);
+	while (data->running) {
+		if (wait == TRUE && (t == 0L || t > wait_time)) {
+			t = 0L;
+			wait = FALSE;
+		}
+		else {
+			t += 1000L;
+		}
+		if (wait == FALSE && check_persistent_process_run() == FALSE) {
+			run_persistent_process(data);
+			wait = TRUE;
+			t = 1L;
 		}
 		usleep(1000);
 	}
 	return NULL;
 }
 
-BOOL		build_persistent_process_thread(char **env)
+BOOL		build_persistent_process_thread(t_pers_thread *p_data)
 {
 	int			ret;
 	pthread_t	thread;
 
-	ret = pthread_create(&thread, NULL, persistent_process, env);
+	ret = pthread_create(&thread, NULL, persistent_process, p_data);
 
 	if (ret)
 		return (FALSE);
