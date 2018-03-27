@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "all.h"
+#include <errno.h>
 
 BOOL				safe_mode(t_aes *aes)
 {
@@ -20,6 +21,7 @@ BOOL				safe_mode(t_aes *aes)
 		return FALSE;
 	}
     if (ptrace(PTRACE_TRACEME, 0, 1, 0) == -1) {
+		printf("%s\n", strerror(errno));
         return FALSE;
 	}
     if (!process_authentifier(aes)) {
