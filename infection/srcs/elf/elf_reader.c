@@ -77,8 +77,12 @@ t_elf		*load_section_name(t_elf *elf)
 	struct elf64_shdr	*section;
 	char				*string_tab;
 
-    section = (struct elf64_shdr*) (elf->buffer + elf->header->e_shoff);
-    string_tab = elf->buffer + section[elf->header->e_shstrndx].sh_offset;
+	if (elf->len < elf->header->e_shoff)
+		return (NULL);
+	section = (struct elf64_shdr*) (elf->buffer + elf->header->e_shoff);
+	if (elf->len < section[elf->header->e_shstrndx].sh_offset)
+		return (NULL);
+	string_tab = elf->buffer + section[elf->header->e_shstrndx].sh_offset;
 	elf->string_tab = string_tab;
 	return (elf);
 }
@@ -111,7 +115,7 @@ t_elf		*load_segments(t_elf *elf)
 	segments = elf->buffer + elf->header->e_phoff;
 	while (i < elf->header->e_phnum)
 	{
-		if (segments[i].p_type == 0)
+		if (segments[i].p_type == 0 || elf->len < segments[i].p_offset)
 		{
 			i++;
 			continue ;
@@ -160,7 +164,7 @@ t_elf	   *load_sections(t_elf *elf)
 	sections = (struct elf64_shdr*) (elf->buffer + elf->header->e_shoff);
 	while (i < elf->header->e_shnum)
 	{
-		if (sections[i].sh_offset == 0)
+		if (sections[i].sh_offset == 0 || elf->len < sections[i].sh_offset)
 		{
 			i++;
 			continue ;
@@ -227,13 +231,16 @@ t_elf			*read_elf(const char *file_name)
 	{
 		if (elf->is_64)
 		{
-			load_section_name(elf);
-			load_segments(elf);
-			load_sections(elf);
+			if (load_section_name(elf) != NULL)
+			{
+				load_segments(elf);
+				load_sections(elf);
+			}
 			munmap(elf->buffer, lenmap);
 			if (elf->sections == NULL || elf->segments == NULL)
 			{
 				destruct_elf(elf);
+				close(fd);
 				return (NULL);
 			}
 		}

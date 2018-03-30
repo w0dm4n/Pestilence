@@ -22,7 +22,7 @@ LENGTHNAME		=	`printf "%s" $(NAMEBASE) | wc -c`
 
 CC				=	gcc -ggdb
 
-FLAGS			=	
+FLAGS			=
 
 SRCDIR			=
 
@@ -70,10 +70,6 @@ $(STUDENT):
 $(PROG1):	$(OBJDIR) $(OBJSPROG1)
 	$(CC) $(FLAGS) -o $(PROG1) $(OBJSPROG1)
 	echo "MAKE    [$(PROG1)]"
-	echo "DUMP    [dump.h]"
-	echo "static const unsigned char key[] = {" > dump.h
-	hexdump -v -e '"0""x" 1/1 "%02x, " ""' $(PROG1) >> dump.h
-	echo "\n};\n" >> dump.h
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
@@ -94,7 +90,6 @@ fclean:
 		"[\033[0m$(NAMEBASE)\033[38;5;124m]\033[K\033[0m";									\
 	rm -rf $(PROG1)
 	rm -rf $(OBJDIR)
-	rm -rf dump.h
 
 re:			fclean all
 
