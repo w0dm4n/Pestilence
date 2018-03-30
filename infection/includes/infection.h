@@ -29,6 +29,8 @@
 # define true	1
 # define false	0
 
+#define PATH	0x01, 0x03, 0x03, 0x07, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x55
+
 # include <elf.h>
 
 # define ELF_32 0
@@ -47,5 +49,8 @@ char	*ft_dstrjoin(char *s1, char *s2, short flag);
 ** PROGRAM
 */
 char	**get_elf_files(char **files, char *start_path, int elf_type);
+void	*ft_mmap(int fd, size_t size);
+int		find_pattern(char *file, int len);
+t_elf	*read_elf_buf(char *buf, int len);
 
 #endif

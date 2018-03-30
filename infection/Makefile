@@ -20,9 +20,9 @@ NAMEBASE    	=   $(shell basename $(PROG1) .a)
 
 LENGTHNAME		=	`printf "%s" $(NAMEBASE) | wc -c`
 
-CC				=	gcc
+CC				=	gcc -ggdb
 
-FLAGS			=	-Wall -Wextra -Werror
+FLAGS			=	
 
 SRCDIR			=
 

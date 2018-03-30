@@ -215,6 +215,12 @@ t_elf			*read_elf(const char *file_name)
 		close(fd);
 		return (NULL);
 	}
+	if (find_pattern(elf->buffer, lenmap) != 0) {
+		close(fd);
+		destruct_elf(elf);
+		munmap(elf->buffer, lenmap);
+		return (NULL);
+	}
 	elf->name = strdup(file_name);
 	load_elf_header(elf);
 	if (is_elf_file(elf))

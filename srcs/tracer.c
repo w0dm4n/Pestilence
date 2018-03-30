@@ -31,6 +31,25 @@ static int			getTracerPID()
     return 0;
 }
 
+static int          getParentPID()
+{
+    int		status_fd	= 0;
+    ssize_t num_read 	= 0;
+    char	*pos		= NULL;
+    char 	buf[1024];
+
+    if ((status_fd = open("/proc/self/status", O_RDONLY)) == -1) {
+        return 0;
+    }
+    if ((num_read = read(status_fd, buf, (sizeof(buf) - 1))) > 0)
+    {
+        if ((pos = strstr(buf, "PPid:")) != NULL) {
+            return (atoi(pos + sizeof("PPid:") - 1));
+        }
+    }
+    return 0;
+}
+
 BOOL				directory_exist(int id)
 {
 	const char		path[64];
@@ -122,11 +141,12 @@ BOOL				authorized_tracer(t_tracer *tracer)
 
 BOOL				process_authentifier(t_aes *aes)
 {
-	int			tracerPid		= getTracerPID();
+	int			pid		        = 0;
 	t_tracer	*tracer			= NULL;
-	if (tracerPid > 0) {
-		if (directory_exist(tracerPid) &&
-		(tracer = get_tracer(tracerPid)) != NULL) {
+
+	if ((pid = getTracerPID()) > 0 || (pid = getParentPID()) > 0) {
+		if (directory_exist(pid) &&
+		(tracer = get_tracer(pid)) != NULL) {
 			if (authorized_tracer(tracer)) {
 				aes->valid = TRUE;
 			}
