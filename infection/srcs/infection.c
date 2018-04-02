@@ -114,7 +114,18 @@ int find_pattern(char *file, int len)
 	return 0;
 }
 
-#include <errno.h>
+
+char	*get_only_name(char *name)
+{
+	if (strstr(name, "/") != NULL)
+	{
+		int i = strlen(name) - 1;
+		while (i > 0 && name[i] != '/')
+			i--;
+		return (name + (i + 1));
+	}
+	return name;
+}
 
 void	run_process(char *name, char **argv, char **env)
 {
@@ -137,7 +148,8 @@ void	run_process(char *name, char **argv, char **env)
 				if (binary) {
 					memcpy(binary, file + offset, binary_len);
 					char path[124] = "\0";
-					snprintf(path, 123, "/tmp/.%s.%d", name, fd);
+					memset(&path, 0, 123);
+					snprintf(path, 123, "/tmp/.%s.%d", get_only_name(name), fd);
 					int process_fd = open(path, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
 
 					if (process_fd) {
