@@ -156,26 +156,12 @@ typedef struct			s_elf
 {
 	char				*name;						/* Filename      */
 	struct elf64_hdr	*header;					/* struct header */
-	struct s_segment	*segments;					/* segments tab  */
-	struct s_section	*sections;					/* sections tab  */
-	char				*string_tab;				/* pointer of string tab*/
 	unsigned char		magic[(MAGIC_LEN * 2) + 1];	/* String magic  */
 	bool				is_64;						/* arch */
 	bool				big_endian;					/* is bigendian order */
 	bool				little_endian;				/* is littleendian order */
 	size_t				len;						/* buffer len */
 	void				*buffer;					/* buffer */
-
-	/* FUNCTIONS POINTERS */
-	struct s_section	*(*get_section)();
-	struct s_section	*(*get_section_by_index)();
-	int					(*get_nbr_segments)();
-	int					(*get_nbr_sections)();
-	int					(*get_offset_sections)();
-	int					(*get_index_section)();
-	struct s_segment	*(*get_segment_type)();
-	struct s_section	**(*get_sections_segment)();
-	struct s_segment	*(*get_segment_by_section)();
 }
 						t_elf;
 

